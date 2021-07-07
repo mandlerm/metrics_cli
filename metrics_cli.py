@@ -55,6 +55,7 @@ class Cli:
                     [labeled, scored] = self.__get_columns(headers)
                     print("Columns are: ", labeled, scored)
 
+
                     run_analyze = input("Do you wish to analyze another pair of columns? y/n ")    
             
                 print("\n\nDo come again\n")
@@ -134,6 +135,11 @@ class Cli:
                 * must have at least one column of scored data
             '''
             )
+        user_input = input(
+            '''
+                
+            '''
+        )
 
 
 
