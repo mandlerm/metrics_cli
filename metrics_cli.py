@@ -1,11 +1,4 @@
 '''
-    supply user message
-
-    import file
-    read from file
-    print out each header column along with an index number
-    
-    
     [ receive user selection
       match columns
       compute metrics
@@ -20,14 +13,18 @@
 
 import csv
 
+"""
+    handles analysis of a csv document, providing metrics of scored data against labeled data, across
+    languages
+"""
 class Cli:
-    '''
+    """
         Starting method for program.
         Obtains for user the filenmae to analyze
-    '''
+    """
     def welcome(self):
         print("Welcome to the Metrics CLI.")
-        print("Type '-help' at any time to see documentation. Type '-exit' to exit")
+        print("Type '-help' to see documentation. Type '-exit' to exit")
         user_input = input("Enter file name: ")
         if (user_input == '-help'):
             self.__help_doc()
@@ -42,10 +39,10 @@ class Cli:
         
         self.__read_file(user_input)
  
-    '''
+    """
         input: filename
         output: 
-    '''
+    """
     def __read_file(self, filename):
         print(filename)
         try: 
@@ -69,9 +66,10 @@ class Cli:
 
 
     """
+        @params: headers <list> 
+        @return: tuple [labeled_column_number, scored_column_number] to be analyzed
 
     """
-    
     def __get_columns(self, headers):
         print("\n*******  Column headers  ******* ")
         [print(f"{x}. {headers[x]}") for x in range(len(headers))]
@@ -112,11 +110,10 @@ class Cli:
         return [labeled, scored]
 
     """
-        input: user_input
+        @params: user_input<string>
         exits program if user_input is '-exit'
     """
     def __exit_check(self, user_input):
-        print("     ==> Exit check", user_input)
         if (user_input == '-exit'):
             print("\n\nDo come again\n")
             exit()
@@ -124,7 +121,7 @@ class Cli:
 
 
     '''
-    Provides help documentation with instruction for how to use tool
+        Provides help documentation with instruction for how to use tool
     '''
     def __help_doc(self):
         print("*******   Documentation   *********\n\n")
