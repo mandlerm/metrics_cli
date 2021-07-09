@@ -23,9 +23,10 @@ class Cli:
         Obtains for user the filenmae to analyze
     """
     def welcome(self):
-        print("Welcome to the Metrics CLI.")
+        print("\n\nWelcome to the Metrics CLI.")
         print("Type '-help' to see documentation. Type '-exit' to exit")
         user_input = input("Enter file name: ")
+        print("     +> ", user_input.strip())
         if (user_input == '-help'):
             self.__help_doc()
             cont = input("Do you wish to continue? y/n \n\n")
@@ -49,12 +50,45 @@ class Cli:
             with open(filename) as f:
                 csvreader = csv.reader(f)
                 headers = next(csvreader)
+                
                 run_analyze = 'y'
 
                 while (run_analyze =='y'):
+
+                    tp = 0
+                    fp = 0
+                    tn = 0
+                    fn = 0
+                    no_match = 0
+                    err = 0 #track potential errors, if a true/false value does not exist
+
                     [labeled, scored] = self.__get_columns(headers)
                     print("Columns are: ", labeled, scored)
 
+                    # now for each row, start calculating TP, FP, TN, FN
+                    count = 0
+                    for r in csvreader:
+                        count += 1
+                        try:
+                            if (r[labeled].lower() == 'true' and r[scored].lower() == 'true'):
+                                tp += 1
+                            elif (r[labeled].lower() == 'false' and r[scored].lower() == 'false'):
+                                tn += 1
+                            elif (r[labeled].lower() == 'false' and r[scored].lower() == 'true'):
+                                fp += 1
+                            elif (r[labeled].lower() == 'true' and r[scored].lower() == 'false'):
+                                fn += 1
+                            else:
+                                no_match += 1
+                                print("no match", r)
+                        except:
+                            err += 1
+                            print(r)
+
+                    print(f"tp: {tp} \t tn: {tn} \t fp: {fp} \t fn: {fn} \t no_match: {no_match} \n errors: {err}")
+                    print(f"{count} == ? == {tp + tn + fp + fn + err+ no_match}")
+
+                    self.__compute_metrics(tp, tn, fp, fn, err, no_match)
 
                     run_analyze = input("Do you wish to analyze another pair of columns? y/n ")    
             
@@ -64,6 +98,14 @@ class Cli:
         except Exception as e:
             print("Error occured: ", e)
             self.welcome()
+
+    """
+        @params: tp, tn, fp, fn, err
+        @return: metric calculations
+    """
+    def __compute_metrics(self, tp, tn, fp, fn, err, no_match):
+        print(f"tp: {tp} \t tn: {tn} \t fp: {fp} \t fn: {fn} \t no_match: {no_match} \n errors: {err}")
+
 
 
     """
@@ -108,7 +150,7 @@ class Cli:
         if (confirmed == 'n'):
             self.__get_columns(headers)
 
-        return [labeled, scored]
+        return [int(labeled), int(scored)]
 
     """
         @params: user_input<string>
@@ -137,7 +179,7 @@ class Cli:
             )
         user_input = input(
             '''
-                
+
             '''
         )
 
